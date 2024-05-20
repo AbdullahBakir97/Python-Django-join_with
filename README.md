@@ -63,7 +63,57 @@ This project demonstrates various queryset operations using the `JoinWithQuerySe
    
 ```python
 from django.contrib.auth.models import User
+from .queries import get_user_with_profile
+
 users = JoinWithQuerySet(User.objects.all()).join_with_profile().join_with('order_set', status='completed')
+
+# Example usage:
+user_id = 1
+user = get_user_with_profile(user_id)
+print(user.username)
+print(user.profile.avatar.url if user.profile else None)
+print(user.profile.country.name if user.profile else None)
+
+# Users With Profile Count
+
+from .queries import get_users_with_profile_count
+
+# Example usage:
+users = get_users_with_profile_count()
+for user in users:
+    print(f"User: {user.username}, Profile Count: {user.profile_count}")
+
+# Users From Country
+
+from .queries import get_users_with_country
+
+# Example usage:
+country_name = "USA"
+users = get_users_with_country(country_name)
+for user in users:
+    print(f"User: {user.username}")
+
+# Users With Order Status
+
+from .queries import get_users_with_order_status
+
+# Example usage:
+order_status = "completed"
+users = get_users_with_order_status(order_status)
+for user in users:
+    print(f"User: {user.username}")
+
+# Users With Profile and Order Status
+
+from .queries import get_users_with_profile_and_order_status
+
+# Example usage:
+order_status = "completed"
+users = get_users_with_profile_and_order_status(order_status)
+for user in users:
+    print(f"User: {user.username}")
+
+
 ```
 
 ## API Endpoints
