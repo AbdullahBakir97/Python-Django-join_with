@@ -62,7 +62,7 @@ This project demonstrates various queryset operations using the `JoinWithQuerySe
 1. *Get users with profile and order status*:
    
 ```python
-from .models import User
+from django.contrib.auth.models import User
 users = JoinWithQuerySet(User.objects.all()).join_with_profile().join_with('order_set', status='completed')
 ```
 
