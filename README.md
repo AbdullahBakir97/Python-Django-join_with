@@ -183,7 +183,7 @@ The project provides several API endpoints to fetch joined data:
   ```
 ## Credits
 
-- Custom queryset functionality inspired by various Django community resources.
+- Custom queryset functionality inspired by various Laravel community resources.
 - Project structure and examples based on best practices in Django development.
 
 

@@ -54,7 +54,7 @@ def order_list(request):
     data = [{'id': order.id, 'user': order.user.username, 'status': order.status} for order in orders]
     return JsonResponse(data, safe=False)
 
-# New views utilizing custom query functions
+# views utilizing custom query functions
 
 def user_with_profile(request, user_id):
     user = get_user_with_profile(user_id)
