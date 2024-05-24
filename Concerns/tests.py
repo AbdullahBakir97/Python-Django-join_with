@@ -92,3 +92,80 @@ class UserWithOrdersAPITest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+class ViewsTestCase(TestCase):
+    def setUp(self):
+        self.country = Country.objects.create(name="USA")
+        self.user = User.objects.create(username="testuser")
+        self.profile = Profile.objects.create(user=self.user, country=self.country)
+        self.order = Order.objects.create(user=self.user, status="completed")
+
+    def test_user_detail_view(self):
+        response = self.client.get(reverse('user_detail', args=[self.user.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['name'], self.user.username)
+        self.assertEqual(response.json()['country'], self.country.name)
+
+    def test_country_list_view(self):
+        response = self.client.get(reverse('country_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], self.country.name)
+
+    def test_profile_detail_view(self):
+        response = self.client.get(reverse('profile_detail', args=[self.user.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['country'], self.country.name)
+
+    def test_order_list_view(self):
+        response = self.client.get(reverse('order_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['status'], self.order.status)
+
+    def test_user_with_profile_view(self):
+        response = self.client.get(reverse('user_with_profile', args=[self.user.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['name'], self.user.username)
+        self.assertEqual(response.json()['country'], self.country.name)
+
+    def test_users_with_profile_count_view(self):
+        response = self.client.get(reverse('users_with_profile_count'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['profile_count'], 1)
+
+    def test_users_from_country_view(self):
+        response = self.client.get(reverse('users_from_country', args=[self.country.name]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], self.user.username)
+
+    def test_users_with_order_status_view(self):
+        response = self.client.get(reverse('users_with_order_status', args=[self.order.status]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], self.user.username)
+
+    def test_users_with_profile_and_country_view(self):
+        response = self.client.get(reverse('users_with_profile_and_country'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['country'], self.country.name)
+
+    def test_users_with_profile_and_order_status_view(self):
+        response = self.client.get(reverse('users_with_profile_and_order_status', args=['completed']))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], self.user.username)
+
+    def test_users_with_profile_count_and_country_view(self):
+        response = self.client.get(reverse('users_with_profile_count_and_country', args=[self.country.name]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['profile_count'], 1)
+
+    def test_user_with_orders_view(self):
+        response = self.client.get(reverse('user_with_orders', args=[self.user.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['status'], self.order.status)
